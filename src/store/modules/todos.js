@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import axios from 'axios';
 
 const state = {
@@ -20,13 +21,28 @@ const actions = {
             {title, completed: false});
 
         commit('newTodo', response.data);
-    }
+    },
+    async deleteTodo({ commit}, id) {
+        await axios.delete(`http://jsonplaceholder.typicode.com/todos/${id}`);
+
+        commit('removeTodo', id);
+    },
+    async filterTodos({ commit }, e) {
+        // get drop down selected number
+        const limit = parseInt(e.target.options[e.target.options.selectedIndex].innerText);
+        
+        const response = await axios.get(
+            `http://jsonplaceholder.typicode.com/todos/?_limit=${limit}`);
+
+        commit('setTodos', response.data);
+    },
 };
 
 // adds response to the state
 const mutations = {
     setTodos: (state, todos) => (state.todos = todos),
-    newTodo: (state, todo) => state.todos.unshift(todo)
+    newTodo: (state, todo) => state.todos.unshift(todo),
+    removeTodo: (state, id) => state.todos = state.todos.filter(todo => todo.id !== id)
 };
 
 export default {

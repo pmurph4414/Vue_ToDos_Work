@@ -25,6 +25,7 @@ scaffold
             onSubmit(e) {
                 e.preventDefault();
                 this.addTodo(this.title);
+                this.title = "Add Todo ..."
             }
         }
     }

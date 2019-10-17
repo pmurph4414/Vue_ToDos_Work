@@ -36,13 +36,28 @@ const actions = {
 
         commit('setTodos', response.data);
     },
+    async updateTodo({ commit }, updTodo) {
+        // new object, updTodo, constructed in component gets added 
+        const response = await axios.put(
+            `http://jsonplaceholder.typicode.com/todos/${updTodo.id}`, updTodo);
+
+        commit('updateTodo', response.data);
+
+    }
 };
 
 // adds response to the state
 const mutations = {
     setTodos: (state, todos) => (state.todos = todos),
     newTodo: (state, todo) => state.todos.unshift(todo),
-    removeTodo: (state, id) => state.todos = state.todos.filter(todo => todo.id !== id)
+    removeTodo: (state, id) => state.todos = state.todos.filter(todo => todo.id !== id),
+    updateTodo: (state, updTodo) => {
+        // getting index of current todo so update can stay in some index location within the array
+        const index = state.todos.findIndex(todo => todo.id === updTodo.id);
+        if (index !== -1) {
+            state.todos.splice(index, 1, updTodo);
+        }
+    }
 };
 
 export default {
